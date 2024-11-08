@@ -1,0 +1,53 @@
+{
+  "name": "@brainhub/schedule-status-bot",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx tsc",
+    "release": "semantic-release",
+    "migrate:dev": "sh deployment/migrate-local.sh",
+    "start:dev": "tsx index.ts",
+    "start": "node --enable-source-maps build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com:codabra/dev/back/bots/schedule-status-bot.git"
+  },
+  "author": "Brainhub",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/codabra/dev/back/bots/schedule-status-bot/-/issues"
+  },
+  "homepage": "https://gitlab.com/codabra/dev/back/bots/schedule-status-bot#readme",
+  "dependencies": {
+    "@brainhub/core-backend": "^1.1.0",
+    "@mattermost/client": "^9.7.0",
+    "@mattermost/types": "^9.3.0",
+    "@types/node-cron": "^3.0.11",
+    "cron": "^3.1.7",
+    "date-fns": "^2.30.0",
+    "dotenv": "^16.4.5",
+    "googleapis": "^126.0.0",
+    "got": "^13.0.0",
+    "lodash": "^4.17.21",
+    "node-cron": "^3.0.3",
+    "node-fetch": "^3.3.2",
+    "node-telegram-bot-api": "^0.66.0"
+  },
+  "devDependencies": {
+    "@types/got": "^9.6.11",
+    "@types/lodash": "^4.14.195",
+    "@types/node": "^20.12.7",
+    "@types/node-telegram-bot-api": "^0.64.6",
+    "@typescript-eslint/eslint-plugin": "^5.60.1",
+    "@typescript-eslint/parser": "^5.60.1",
+    "eslint": "^8.43.0",
+    "semantic-release": "^21.0.5",
+    "ts-node": "^10.9.1",
+    "tsx": "^4.10.3",
+    "typescript": "^5.1.3"
+  }
+}

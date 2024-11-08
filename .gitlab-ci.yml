@@ -1,0 +1,65 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  ENV_NAME: undefined # override me
+  COMPOSE_FILE: ./deployment/docker-compose.yml
+  PROJECT_NAME: schedule-status-bot
+  REGISTRY: ${CI_REGISTRY_IMAGE}/
+
+.login_in_container_registry: &login_in_container_registry
+  - docker login -u ${DOCKER_REGISTRY_USER} -p ${DOCKER_REGISTRY_PASSWORD} ${CI_REGISTRY}
+
+.define_version: &define_version
+  - export version=$(./deployment/get_version.sh)
+
+Build:
+  stage: build
+  variables:
+    ENV_NAME: build
+  before_script:
+    - *login_in_container_registry
+    - *define_version
+    - cp deployment/build.env .
+    - echo "//${CI_SERVER_HOST}/:_authToken=${NPM_TOKEN}" >> .npmrc
+  script:
+    - docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} build
+    - docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE} push
+  when: always
+  allow_failure: false
+  resource_group: schedule-status-bot_build
+  tags: [shell, codabra]
+
+.deploy_template:
+  stage: deploy
+  variables:
+    PROJECT_NAME: ${ENV_NAME}-schedule-status-bot
+  before_script:
+    - *login_in_container_registry
+    - *define_version
+    - git archive --remote=${ENVCONFIGS_REPO_SSH} HEAD configs/${ENV_NAME}.env | tar --strip-components=1 -x
+  script:
+    - docker stack deploy -c ${COMPOSE_FILE} --with-registry-auth --prune ${PROJECT_NAME}
+  when: manual
+  allow_failure: true
+  tags: [shell, codabra, swarm]
+
+Deploy STAGE:
+  extends: .deploy_template
+  variables:
+    ENV_NAME: stage
+    APP_PORT: 7111
+  environment:
+    name: stage
+  needs: ['Build']
+
+Deploy PROD:
+  extends: .deploy_template
+  when: manual
+  variables:
+    ENV_NAME: prod
+    APP_PORT: 7100
+  environment:
+    name: prod
+  needs: ['Build']

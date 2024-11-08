@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "lib": ["es6", "es2021", "esnext"],
+    "target": "ES2020",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "declaration": false,
+    "rootDir": "./",
+    "baseUrl": "./",
+    "outDir": "./build",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    "preserveSymlinks": true,
+    "strictNullChecks": true,
+    "skipLibCheck": true,
+    "typeRoots": ["./node_modules/@types", "./src/types", "./*.d.ts"]
+  },
+  "exclude": ["dev/**/*"],
+  "ts-node": {
+    "esm": true,
+    "files": true,
+    "experimentalSpecifierResolution": "node"
+  }
+}
